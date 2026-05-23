@@ -1,0 +1,53 @@
+.sidebar {
+    background-color: #27DB8F;
+    height: 100vh;
+    /* background-image: url('caminho_da_imagem.png'); */
+}
+
+.logo_sidebar {
+    text-align: center;
+}
+
+.img_logo_sidebar {
+    width: 100%;
+}
+
+.area_cadastrar {
+    margin-top: 8%;
+    margin-left: 15%;
+    width: 70%;
+}
+
+.titulo {
+    font-weight: bold;
+}
+
+.sub-titulo {
+    color: gray;
+}
+
+.input-form {
+    margin-top: 15px;
+    width: 100%;
+    padding: 5px;
+    outline: none;
+}
+
+.input-form:focus {
+    border: 2px solid #27DB8F !important;
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+.bold {
+    font-weight: bold;
+}
+
+.btn-first {
+    border: none;
+    padding: 5px 15px; /* Simplifiquei: 5px em cima/baixo e 15px nas laterais */
+    font-size: 25px;
+    background-color: #27DB8F;
+    color: white;
+    font-weight: bold;
+}
