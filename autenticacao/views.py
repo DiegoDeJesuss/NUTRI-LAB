@@ -1,5 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse
+from .ultis import password_is_valid
+from django.shortcuts import redirect
 
 
 # Create your views here.
@@ -11,10 +13,15 @@ def cadastro(request):
         email = request.POST.get('email')
         senha = request.POST.get('senha')
         confirmar_senha = request.POST.get('confirmar_senha')
-        return HttpResponse(f'{usuario} - {email} - {senha} - {confirmar_senha}')
+
+        
+        if not password_is_valid(request, senha, confirmar_senha):
+            return redirect('cadastro')
+        
+        return HttpResponse('Testando')
 
 
-    return render(request, 'cadastro.html')
+   
 
 def logar(request):
     return render(request, 'logar.html')
