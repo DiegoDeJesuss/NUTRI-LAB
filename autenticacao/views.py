@@ -29,12 +29,14 @@ def cadastro(request):
                 is_active=False
             )
             user.save()
+            messages.add_message(request, constants.SUCCESS, 'Usuário criado com sucesso!')
 
             return redirect('/auth/logar')
 
-        except Exception as e:
-            print(e)
-            return redirect('/auth/cadastro')
+        except:
+            messages.add_message(request, constants.ERROR, 'Erro interno do sistema')
+            return redirect('cadastro')
+            
 
         return HttpResponse('Testando')
 
