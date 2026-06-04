@@ -3,7 +3,7 @@
 
 {% block 'head' %}
     <link rel="stylesheet" href="{% static 'css/css.css' %}">
-{% endblock %}
+    {% endblock %}
 
 {% block 'titulo' %}Cadastre-se{% endblock %}
 
@@ -47,11 +47,21 @@
                     <div class="row">
                         <div class="col-md">
                             <span class="bold">Senha</span>
-                            <input class="form-control input-form" name="senha" type="password" placeholder="Digite sua senha...">
+                            <div class="input-group">
+                                <input id="senha" class="form-control input-form" name="senha" type="password" placeholder="Digite sua senha...">
+                                <span class="input-group-text" style="cursor: pointer; background: transparent; color: #6c757d;" onclick="var campo = document.getElementById('senha'); var icone = this.querySelector('i'); campo.type = campo.type === 'password' ? 'text' : 'password'; icone.className = campo.type === 'password' ? 'bi bi-eye' : 'bi bi-eye-slash';">
+                                    <i class="bi bi-eye"></i>
+                                </span>
+                            </div>
                         </div>
                         <div class="col-md">
                             <span class="bold">Confirmar senha</span>
-                            <input class="form-control input-form" name="confirmar_senha" type="password" placeholder="Confirme sua senha"> 
+                            <div class="input-group">
+                                <input id="confirmar_senha" class="form-control input-form" name="confirmar_senha" type="password" placeholder="Confirme sua senha"> 
+                                <span class="input-group-text" style="cursor: pointer; background: transparent; color: #6c757d;" onclick="var campo = document.getElementById('confirmar_senha'); var icone = this.querySelector('i'); campo.type = campo.type === 'password' ? 'text' : 'password'; icone.className = campo.type === 'password' ? 'bi bi-eye' : 'bi bi-eye-slash';">
+                                    <i class="bi bi-eye"></i>
+                                </span>
+                            </div>
                         </div>
                     </div>
                     <br>
