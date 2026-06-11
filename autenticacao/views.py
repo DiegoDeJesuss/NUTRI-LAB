@@ -13,6 +13,8 @@ from .ultis import password_is_valid
 # Create your views here.
 def cadastro(request):
     if request.method == 'GET':
+        if request.user.is_authenticated:
+            return redirect('/')
         return render(request, 'cadastro.html')
 
     elif request.method == 'POST':
@@ -46,6 +48,8 @@ def cadastro(request):
 
 def logar(request):
     if request.method == "GET":
+        if request.user.is_authenticated:
+            return redirect('/')
         return render(request, 'logar.html')
     elif request.method == "POST":
         username = request.POST.get('usuario')
@@ -57,4 +61,10 @@ def logar(request):
             return redirect('/auth/logar')
         else:
                 auth.login(request, usuario)
-                return redirect('/')    
+                return redirect('/')   
+
+
+
+def sair(request):
+    auth.logout(request)
+    return redirect('/auth/logar') 
