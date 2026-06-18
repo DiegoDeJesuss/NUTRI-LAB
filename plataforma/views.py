@@ -69,7 +69,11 @@ def dados_paciente_listar(request):
     
 @login_required(login_url='/auth/logar/')
 def dados_paciente(request, id):            
+       paciente = get_object_or_404(Pacientes, id=id)
+       if not paciente.nutri == request.user:
+              messages.add_message(request, constants.ERROR, 'Esse paciente não é seu')
+              return redirect('/dados_paciente/')
        if request.method == "GET":
-        paciente = Pacientes.objects.get(id=id)
-        return render(request, 'dados_paciente.html', {'paciente': paciente})
+              return render(request, 'dados_paciente.html', {'paciente': paciente})
+
 
