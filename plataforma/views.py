@@ -1,6 +1,8 @@
 # from urllib import request  <- Comentei essa linha já que você queria remover
 
-from django.shortcuts import render, redirect
+from urllib import request
+
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -56,3 +58,18 @@ def pacientes(request):
             print(f"=============================\n")
             messages.add_message(request, constants.ERROR, 'Erro interno do sistema')
             return redirect('/pacientes/')
+        
+
+
+@login_required(login_url='/auth/logar/')
+def dados_paciente_listar(request):
+    if request.method == "GET":
+        pacientes = Pacientes.objects.filter(nutri=request.user)
+        return render(request, 'dados_paciente_listar.html', {'pacientes': pacientes})
+    
+@login_required(login_url='/auth/logar/')
+def dados_paciente(request, id):            
+       if request.method == "GET":
+        paciente = Pacientes.objects.get(id=id)
+        return render(request, 'dados_paciente.html', {'paciente': paciente})
+
