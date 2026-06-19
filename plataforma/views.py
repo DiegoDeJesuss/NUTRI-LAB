@@ -75,5 +75,16 @@ def dados_paciente(request, id):
               return redirect('/dados_paciente/')
        if request.method == "GET":
               return render(request, 'dados_paciente.html', {'paciente': paciente})
+       elif request.method == "POST":
+            peso = request.POST.get('peso')
+            altura = request.POST.get('altura')
+            gordura = request.POST.get('gordura')
+            musculo = request.POST.get('musculo')
+            hdl = request.POST.get('hdl')
+            ldl = request.POST.get('ldl')
+            colesterol_total = request.POST.get('ctotal')
+            triglicerídios = request.POST.get('triglicerídios')
+            return redirect('/dados_paciente/')
+
 
 
