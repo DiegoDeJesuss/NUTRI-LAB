@@ -1,5 +1,6 @@
 # from urllib import request  <- Comentei essa linha já que você queria remover
 
+from datetime import datetime
 from urllib import request
 
 from django.shortcuts import render, redirect, get_object_or_404
@@ -7,7 +8,8 @@ from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.messages import constants
-from .models import Pacientes
+from .models import DadosPaciente, Pacientes, DadosPaciente
+from datetime import datetime
 
 @login_required(login_url='/auth/logar/')
 def pacientes(request):
@@ -84,6 +86,25 @@ def dados_paciente(request, id):
             ldl = request.POST.get('ldl')
             colesterol_total = request.POST.get('ctotal')
             triglicerídios = request.POST.get('triglicerídios')
+
+
+
+
+
+
+            paciente = DadosPaciente(paciente=paciente,
+                data=datetime.now(),
+                peso=peso,
+                altura=altura,
+                percentual_gordura=gordura,
+                percentual_musculo=musculo,
+                colesterol_hdl=hdl,
+                colesterol_ldl=ldl,
+                colesterol_total=colesterol_total,
+                trigliceridios=triglicerídios)
+            paciente.save()
+            messages.add_message(request, constants.SUCCESS, 'Dados cadastrado com sucesso')
+
             return redirect('/dados_paciente/')
 
 
