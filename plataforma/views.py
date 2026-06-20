@@ -1,21 +1,16 @@
-# from urllib import request  <- Comentei essa linha já que você queria remover
-
 from datetime import datetime
-from urllib import request
-
 from django.shortcuts import render, redirect, get_object_or_404
-from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.messages import constants
-from .models import DadosPaciente, Pacientes, DadosPaciente
-from datetime import datetime
+from .models import Pacientes, DadosPaciente
 
 @login_required(login_url='/auth/logar/')
 def pacientes(request):
     if request.method == "GET":
+        dados_paciente = DadosPaciente.objects.filter(paciente__nutri=request.user).order_by('-data')
         pacientes = Pacientes.objects.filter(nutri=request.user)
-        return render(request, 'pacientes.html', {'pacientes': pacientes})
+        return render(request, 'pacientes.html', {'pacientes': pacientes, 'dados_paciente': dados_paciente})
         
     elif request.method == "POST":
         nome = request.POST.get('nome')
@@ -40,27 +35,25 @@ def pacientes(request):
             messages.add_message(request, constants.ERROR, 'Já existe um paciente com esse E-mail')
             return redirect('/pacientes/')
         
-        # Bloco Try...Except corrigido
+        # Salvando o paciente
         try:
             paciente = Pacientes(nome=nome,
                                  sexo=sexo,
                                  idade=idade,
                                  email=email,
                                  telefone=telefone,
-                                 nutri=request.user) # <--- A CORREÇÃO ESTÁ AQUI!
+                                 nutri=request.user)
             paciente.save()
             
-            # Estas linhas de sucesso agora estão DENTRO do bloco try
             messages.add_message(request, constants.SUCCESS, 'Paciente cadastrado com sucesso')
             return redirect('/pacientes/')
             
-        except Exception as e: # O except agora está perfeitamente alinhado com o try
+        except Exception as e:
             print(f"\n=============================")
             print(f"ERRO AO SALVAR: {e}")
             print(f"=============================\n")
             messages.add_message(request, constants.ERROR, 'Erro interno do sistema')
             return redirect('/pacientes/')
-        
 
 
 @login_required(login_url='/auth/logar/')
@@ -68,31 +61,37 @@ def dados_paciente_listar(request):
     if request.method == "GET":
         pacientes = Pacientes.objects.filter(nutri=request.user)
         return render(request, 'dados_paciente_listar.html', {'pacientes': pacientes})
-    
+
+
 @login_required(login_url='/auth/logar/')
 def dados_paciente(request, id):            
-       paciente = get_object_or_404(Pacientes, id=id)
-       if not paciente.nutri == request.user:
-              messages.add_message(request, constants.ERROR, 'Esse paciente não é seu')
-              return redirect('/dados_paciente/')
-       if request.method == "GET":
-              return render(request, 'dados_paciente.html', {'paciente': paciente})
-       elif request.method == "POST":
-            peso = request.POST.get('peso')
-            altura = request.POST.get('altura')
-            gordura = request.POST.get('gordura')
-            musculo = request.POST.get('musculo')
-            hdl = request.POST.get('hdl')
-            ldl = request.POST.get('ldl')
-            colesterol_total = request.POST.get('ctotal')
-            triglicerídios = request.POST.get('triglicerídios')
+    paciente = get_object_or_404(Pacientes, id=id)
+    
+    # Validação de segurança
+    if not paciente.nutri == request.user:
+        messages.add_message(request, constants.ERROR, 'Esse paciente não é seu')
+        return redirect('/pacientes/')
+           
+    if request.method == "GET":
+        # Buscando o histórico do paciente para preencher a tabela dinâmica
+        dados_paciente = DadosPaciente.objects.filter(paciente=paciente)
+        return render(request, 'dados_paciente.html', {'paciente': paciente, 'dados_paciente': dados_paciente})
+           
+    elif request.method == "POST":
+        # O replace(',', '.') garante que se o usuário digitar 1,75 o Python transforme em 1.75
+        peso = request.POST.get('peso', '').replace(',', '.')
+        altura = request.POST.get('altura', '').replace(',', '.')
+        gordura = request.POST.get('gordura', '').replace(',', '.')
+        musculo = request.POST.get('musculo', '').replace(',', '.')
+        hdl = request.POST.get('hdl', '').replace(',', '.')
+        ldl = request.POST.get('ldl', '').replace(',', '.')
+        colesterol_total = request.POST.get('ctotal', '').replace(',', '.')
+        trigliceridios = request.POST.get('trigliceridios', '').replace(',', '.')
 
-
-
-
-
-
-            paciente = DadosPaciente(paciente=paciente,
+        try:
+            # Salvando os novos dados
+            novo_dado = DadosPaciente(
+                paciente=paciente,
                 data=datetime.now(),
                 peso=peso,
                 altura=altura,
@@ -101,11 +100,14 @@ def dados_paciente(request, id):
                 colesterol_hdl=hdl,
                 colesterol_ldl=ldl,
                 colesterol_total=colesterol_total,
-                trigliceridios=triglicerídios)
-            paciente.save()
-            messages.add_message(request, constants.SUCCESS, 'Dados cadastrado com sucesso')
+                trigliceridios=trigliceridios
+            )
+            novo_dado.save()
+            messages.add_message(request, constants.SUCCESS, 'Dados cadastrados com sucesso')
+        except Exception as e:
+            # Caso o banco de dados recuse o formato do número
+            print(f"ERRO AO SALVAR DADOS DO PACIENTE: {e}")
+            messages.add_message(request, constants.ERROR, 'Erro ao salvar. Verifique se os números estão corretos.')
 
-            return redirect('/dados_paciente/')
-
-
-
+        # Redirecionando de volta para a mesma página com o ID correto
+        return redirect(f'/dados_paciente/{id}/')
