@@ -87,7 +87,8 @@ def logar(request):
             return redirect('/auth/logar')
         else:
             auth.login(request, usuario)
-            return redirect('/') 
+            return redirect('/pacientes') 
+
 
 
 def sair(request):
