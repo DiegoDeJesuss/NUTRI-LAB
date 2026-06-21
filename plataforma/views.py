@@ -1,4 +1,5 @@
 from datetime import datetime
+from urllib import request
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, JsonResponse
 from django.contrib.auth.decorators import login_required
@@ -129,3 +130,10 @@ def grafico_peso(request, id):
     data = {'peso': pesos,
     'labels': labels}
     return JsonResponse(data)
+
+
+def plano_alimentar_listar(request):
+    if request.method == "GET":
+        pacientes = Pacientes.objects.filter(nutri=request.user)
+        return render(request, 'plano_alimentar_listar.html', {'pacientes': pacientes})
+    
