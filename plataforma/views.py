@@ -145,7 +145,8 @@ def plano_alimentar(request, id):
         return redirect('/plano_alimentar_listar/')
     if request.method == "GET":
         r1 = Refeicao.objects.filter(paciente=paciente).order_by('horario')
-        return render(request, 'plano_alimentar.html', {'paciente': paciente, 'refeicao':r1})     
+        o1 = Opcao.objects.all()
+        return render(request, 'plano_alimentar.html', {'paciente': paciente, 'refeicao':r1, 'opcao': o1})     
        
     
 def refeicao(request, id_paciente):
