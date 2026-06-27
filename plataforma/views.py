@@ -5,7 +5,7 @@ from django.http import HttpResponse, JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.messages import constants
-from .models import Pacientes, DadosPaciente, Refeicao
+from .models import Opcao, Pacientes, DadosPaciente, Refeicao
 from django.views.decorators.csrf import csrf_exempt
 
 @login_required(login_url='/auth/logar/')
@@ -171,6 +171,23 @@ def refeicao(request, id_paciente):
 
     messages.add_message(request, constants.SUCCESS, 'Refeição cadastrada')
     return redirect(f'/plano_alimentar/{id_paciente}')
+
+
+def opcao(request, id_paciente):
+    if request.method == "POST":
+        id_refeicao = request.POST.get('refeicao')
+        imagem = request.FILES.get('imagem')
+        descricao = request.POST.get("descricao")
+        
+        o1 = Opcao(refeicao_id=id_refeicao,
+        imagem=imagem,
+        descricao=descricao)
+        o1.save()
+        
+        
+        messages.add_message(request, constants.SUCCESS, 'Opcao cadastrada')
+        return redirect(f'/plano_alimentar/{id_paciente}')
+
 
     
     
