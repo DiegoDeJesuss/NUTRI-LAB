@@ -3,10 +3,10 @@ from django.contrib.auth.models import User
 
 class Pacientes(models.Model):
     choices_sexo = (('F', 'Feminino'),
-                    ('M', 'Masculino')) # Corrigido o erro de digitação aqui
+                    ('M', 'Masculino')) 
     nome = models.CharField(max_length=50)
     sexo = models.CharField(max_length=1, choices=choices_sexo)
-    idade = models.IntegerField()
+    idade = models.FloatField()
     email = models.EmailField()
     telefone = models.CharField(max_length=19)
     nutri = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -19,37 +19,33 @@ class DadosPaciente(models.Model):
     paciente = models.ForeignKey(Pacientes, on_delete=models.CASCADE)
     data = models.DateTimeField()
     
-    # Estes 4 campos foram alterados para FloatField para aceitarem decimais (ex: 1.75)
     peso = models.FloatField()
     altura = models.FloatField()
     percentual_gordura = models.FloatField()
     percentual_musculo = models.FloatField()
     
-    # Mantidos como IntegerField, pois dados de colesterol geralmente são números inteiros
-    colesterol_hdl = models.IntegerField()
-    colesterol_ldl = models.IntegerField()
-    colesterol_total = models.IntegerField()
-    trigliceridios = models.IntegerField()
+    colesterol_hdl = models.FloatField()
+    colesterol_ldl = models.FloatField()
+    colesterol_total = models.FloatField()
+    trigliceridios = models.FloatField()
 
 
 class Refeicao(models.Model):
     paciente = models.ForeignKey(Pacientes, on_delete=models.CASCADE)
     titulo = models.CharField(max_length=50)
     horario = models.TimeField()
-    carboidratos = models.IntegerField()
-    proteinas = models.IntegerField()
-    gorduras = models.IntegerField()
+    carboidratos = models.FloatField()
+    proteinas = models.FloatField()
+    gorduras = models.FloatField()
+    
     def __str__(self):
         return self.titulo
-
 
 
 class Opcao(models.Model):
     refeicao = models.ForeignKey(Refeicao, on_delete=models.CASCADE)
     imagem = models.ImageField(upload_to="opcao")
     descricao = models.TextField()
+    
     def __str__(self):
         return self.descricao
-
-    def __str__(self):
-        return f"Paciente({self.paciente.nome}, {self.peso})"

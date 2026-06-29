@@ -41,9 +41,16 @@
   <div class="fundo-alimentar">
     {% for re in refeicao %}
       <div class="refeicao">
+        
         <div class="head-refeicao">
           <span>{{re.titulo}}</span>
-          <span style="float: right;">{{re.horario}}h</span>
+          
+          <span style="float: right;">
+            {{re.horario}}h
+            <a href="{% url 'deletar_refeicao' re.id %}" style="text-decoration: none; margin-left: 15px; color: #ff6b6b; font-weight: bold; font-size: 16px;" onclick="return confirm('Tem certeza que deseja excluir esta refeição inteira?');" title="Excluir Refeição">
+               ❌
+            </a>
+          </span>
         </div>
         
         <div class="body-refeicao">
@@ -57,13 +64,24 @@
                     <img width="100%" src="{% static 'plataforma/img/perfil1.png' %}">
                   {% endif %}
                 </div>
+                
                 <div class="col-md-10">
                   {{ opcao.descricao }}
+                  
+                  <br><br>
+                  
+                  <div style="float: right; margin-bottom: 10px;">
+                    <a href="{% url 'deletar_opcao' opcao.id %}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Tem certeza que deseja apagar esta opção?');" title="Apagar Opção">
+                       ❌
+                    </a>
+                  </div>
                 </div>
+                
               </div>
             </div>
           {% endfor %}
         </div>
+        
       </div>
     {% endfor %}
   </div>
@@ -107,19 +125,19 @@
                   <div class="col-md-4">
                     <label for="validationServerUsername">Carboidratos</label>
                     <div class="input-group">
-                      <input type="text" class="form-control" placeholder="" name="carboidratos">
+                      <input type="number" step="0.01" class="form-control" placeholder="" name="carboidratos">
                     </div>
                   </div>
                   <div class="col-md-4">
                     <label for="validationServerUsername">Proteínas</label>
                     <div class="input-group">
-                      <input type="text" class="form-control" placeholder="" name="proteinas">
+                      <input type="number" step="0.01" class="form-control" placeholder="" name="proteinas">
                     </div>
                   </div>
                   <div class="col-md-4">
                     <label for="validationServerUsername">Gorduras</label>
                     <div class="input-group">
-                      <input type="text" class="form-control" placeholder="" name="gorduras">
+                      <input type="number" step="0.01" class="form-control" placeholder="" name="gorduras">
                     </div>
                   </div>
                 </div>

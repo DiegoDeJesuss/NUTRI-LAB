@@ -123,8 +123,6 @@ def grafico_peso(request, id):
     paciente = Pacientes.objects.get(id=id)
     dados = DadosPaciente.objects.filter(paciente=paciente).order_by("data")
     
-    
-    
     pesos = [dado.peso for dado in dados]
     labels = list(range(len(pesos)))
     data = {'peso': pesos,
@@ -132,12 +130,14 @@ def grafico_peso(request, id):
     return JsonResponse(data)
 
 
+@login_required(login_url='/auth/logar/')
 def plano_alimentar_listar(request):
     if request.method == "GET":
         pacientes = Pacientes.objects.filter(nutri=request.user)
         return render(request, 'plano_alimentar_listar.html', {'pacientes': pacientes})
     
 
+@login_required(login_url='/auth/logar/')
 def plano_alimentar(request, id):
     paciente = get_object_or_404(Pacientes, id=id)
     if not paciente.nutri == request.user:
@@ -149,31 +149,36 @@ def plano_alimentar(request, id):
         return render(request, 'plano_alimentar.html', {'paciente': paciente, 'refeicao':r1, 'opcao': o1})     
        
     
+@login_required(login_url='/auth/logar/')
 def refeicao(request, id_paciente):
     paciente = get_object_or_404(Pacientes, id=id_paciente)
     if not paciente.nutri == request.user:
         messages.add_message(request, constants.ERROR, 'Esse paciente não é seu')
         return redirect('/dados_paciente/')
+        
     if request.method == "POST":
         titulo = request.POST.get('titulo')
         horario = request.POST.get('horario')
-        carboidratos = request.POST.get('carboidratos')
-    proteinas = request.POST.get('proteinas')
-    gorduras = request.POST.get('gorduras')
-    
-    
-    r1 = Refeicao(paciente=paciente,
-        titulo=titulo,
-        horario=horario,
-        carboidratos=carboidratos,
-        proteinas=proteinas,
-        gorduras=gorduras)
-    r1.save()
+        
+        # O replace garante que vírgulas virem pontos para o banco de dados (Float)
+        carboidratos = request.POST.get('carboidratos', '').replace(',', '.')
+        proteinas = request.POST.get('proteinas', '').replace(',', '.')
+        gorduras = request.POST.get('gorduras', '').replace(',', '.')
+        
+        r1 = Refeicao(paciente=paciente,
+            titulo=titulo,
+            horario=horario,
+            carboidratos=carboidratos,
+            proteinas=proteinas,
+            gorduras=gorduras)
+        r1.save()
 
-    messages.add_message(request, constants.SUCCESS, 'Refeição cadastrada')
+        messages.add_message(request, constants.SUCCESS, 'Refeição cadastrada')
+        
     return redirect(f'/plano_alimentar/{id_paciente}')
 
 
+@login_required(login_url='/auth/logar/')
 def opcao(request, id_paciente):
     if request.method == "POST":
         id_refeicao = request.POST.get('refeicao')
@@ -185,10 +190,33 @@ def opcao(request, id_paciente):
         descricao=descricao)
         o1.save()
         
-        
         messages.add_message(request, constants.SUCCESS, 'Opcao cadastrada')
         return redirect(f'/plano_alimentar/{id_paciente}')
 
 
+@login_required(login_url='/auth/logar/')
+def deletar_refeicao(request, id):
+    refeicao = get_object_or_404(Refeicao, id=id)
+    if refeicao.paciente.nutri != request.user:
+        messages.add_message(request, constants.ERROR, 'Você não tem permissão para deletar isso.')
+        return redirect('/pacientes/')
     
+    id_paciente = refeicao.paciente.id
+    refeicao.delete() 
     
+    messages.add_message(request, constants.SUCCESS, 'Refeição deletada com sucesso')
+    return redirect(f'/plano_alimentar/{id_paciente}')
+
+
+@login_required(login_url='/auth/logar/')
+def deletar_opcao(request, id):
+    opcao = get_object_or_404(Opcao, id=id)
+    if opcao.refeicao.paciente.nutri != request.user:
+        messages.add_message(request, constants.ERROR, 'Você não tem permissão para deletar isso.')
+        return redirect('/pacientes/')
+    
+    id_paciente = opcao.refeicao.paciente.id
+    opcao.delete() 
+    
+    messages.add_message(request, constants.SUCCESS, 'Opção deletada com sucesso')
+    return redirect(f'/plano_alimentar/{id_paciente}')
