@@ -42,13 +42,17 @@
     <br />
     <br />
 
-    <table class="table table-striped">
+   <table class="table table-striped">
         <thead>
             <tr>
                 <th scope="col">Peso</th>
                 <th scope="col">Altura</th>
-                <th scope="col">% gordura</th>
-                <th scope="col">% músculo</th>
+                <th scope="col">% Gordura</th>
+                <th scope="col">% Músculo</th>
+                <th scope="col">HDL</th>
+                <th scope="col">LDL</th>
+                <th scope="col">C. Total</th>
+                <th scope="col">Triglicerídios</th>
             </tr>
         </thead>
         <tbody>
@@ -58,10 +62,15 @@
                     <td>{{ dado.altura }} m</td>
                     <td>{{ dado.percentual_gordura }}%</td>
                     <td>{{ dado.percentual_musculo }}%</td>
+                    
+                    <td>{{ dado.colesterol_hdl }} mg/dL</td>
+                    <td>{{ dado.colesterol_ldl }} mg/dL</td>
+                    <td>{{ dado.colesterol_total }} mg/dL</td>
+                    <td>{{ dado.trigliceridios }} mg/dL</td>
                 </tr>
             {% empty %}
                 <tr>
-                    <td colspan="4" class="text-center">
+                    <td colspan="8" class="text-center">
                         Nenhum dado cadastrado no momento.
                     </td>
                 </tr>
