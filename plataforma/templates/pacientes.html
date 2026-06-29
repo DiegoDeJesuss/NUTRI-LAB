@@ -3,6 +3,13 @@
 
 {% block 'plataforma' %}
 
+    <style>
+        .card-paciente {
+            background-color: #b3f5a2; /* Tom de verde desta página */
+            position: relative; /* Isso permite colocar o X no cantinho livremente */
+        }
+    </style>
+
     {% if messages %}
         <br>
         {% for message in messages %}
@@ -21,13 +28,19 @@
     <br>
     <br>
 
-    <!-- A SOLUÇÃO ESTÁ AQUI: A div 'row' agora engloba todos os cards -->
     <div class="row">
-        
         {% for paciente in pacientes %}
             <div class="col-md-4 mb-4">
                 <a href="#" class="link-hover">
                     <div class="card-paciente">
+                        
+                        <a href="{% url 'deletar_paciente' paciente.id %}" 
+                           onclick="return confirm('Tem certeza que deseja excluir este paciente? Todos os dados dele serão apagados.');" 
+                           style="position: absolute; top: 10px; right: 15px; color: #ff6b6b; font-weight: bold; text-decoration: none; font-size: 16px;" 
+                           title="Excluir Paciente">
+                            ❌
+                        </a>
+
                         <div class="foto-perfil">
                             {% if paciente.sexo == "M" %}
                                 <img src="{% static 'plataforma/img/perfil2.png' %}">
@@ -43,13 +56,8 @@
                 </a>
             </div>
         {% endfor %}
-
-        
-    </div>
-        
     </div>
 
-    <!-- Modal -->
     <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">

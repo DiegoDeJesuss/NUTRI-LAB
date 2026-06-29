@@ -14,4 +14,5 @@ urlpatterns = [
     # Rotas para deletar
     path('deletar_refeicao/<int:id>/', views.deletar_refeicao, name="deletar_refeicao"),
     path('deletar_opcao/<int:id>/', views.deletar_opcao, name="deletar_opcao"),
+    path('deletar_paciente/<str:id>/', views.deletar_paciente, name="deletar_paciente"),
 ]

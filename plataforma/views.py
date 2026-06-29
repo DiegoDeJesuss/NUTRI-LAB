@@ -220,3 +220,17 @@ def deletar_opcao(request, id):
     
     messages.add_message(request, constants.SUCCESS, 'Opção deletada com sucesso')
     return redirect(f'/plano_alimentar/{id_paciente}')
+
+@login_required(login_url='/auth/logar/')
+def deletar_paciente(request, id):
+    paciente = get_object_or_404(Pacientes, id=id)
+    
+    # Segurança: verifica se o nutricionista logado é o dono do paciente
+    if paciente.nutri != request.user:
+        messages.add_message(request, constants.ERROR, 'Você não tem permissão para deletar este paciente.')
+        return redirect('/pacientes/')
+    
+    paciente.delete() # Deleta o paciente e tudo vinculado a ele (refeições, histórico, etc)
+    
+    messages.add_message(request, constants.SUCCESS, 'Paciente deletado com sucesso.')
+    return redirect('/pacientes/')

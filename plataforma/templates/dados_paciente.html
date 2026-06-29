@@ -3,6 +3,12 @@
 
 {% block 'plataforma' %}
 
+<style>
+        .card-paciente {
+            background-color: #82fd64; /* Tom de verde desta página */
+        }
+    </style>
+
     {% if messages %}
         <br />
         {% for message in messages %}
@@ -12,9 +18,14 @@
     
     <br />
 
-    <div class="row">
+    <div class="row card-paciente">
         <div class="col-md-3">
-            <img src="{% static 'plataforma/img/perfil1.png' %}" />
+            {% if paciente.sexo == "M" %}
+                <img src="{% static 'plataforma/img/perfil2.png' %}" />
+            {% else %}
+                <img src="{% static 'plataforma/img/perfil1.png' %}" />
+            {% endif %}
+            
         </div>
         <div class="col-md-3 dados descricao">
             <h4>{{ paciente.nome }}</h4>

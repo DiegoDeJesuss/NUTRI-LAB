@@ -1,6 +1,15 @@
-{% extends 'base_plataforma.html' %} {% load static %} {% block 'plataforma' %}
+{% extends 'base_plataforma.html' %} {% load static %}
+ {% block 'plataforma' %}
+
+<style>
+        .card-paciente {
+            background-color: #87e670; /* Tom de verde desta página */
+        }
+    </style>
 {% if messages %}
 <br />
+
+
 {% for message in messages %}
 <div class="alert {{message.tags}}">{{message}}</div>
 {% endfor %} {% endif %}
